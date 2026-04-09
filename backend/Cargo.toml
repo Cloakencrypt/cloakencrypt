@@ -1,0 +1,17 @@
+[package]
+name = "ic_vault_backend"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.10"
+ic-cdk = "0.19"
+serde = { version = "1", features = ["derive"] }
+serde_bytes = "0.11"
+ic-vetkeys = "0.6"
+ic-stable-structures = "0.7"
+ciborium = "0.2"
+getrandom = { version = "0.2", features = ["custom"] }

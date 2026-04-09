@@ -1,0 +1,12 @@
+# Rust
+target/
+
+# Node
+node_modules/
+frontend/dist/
+
+# ICP
+.icp/cache/
+
+# OS
+.DS_Store

@@ -1,0 +1,16 @@
+{
+  "name": "cloak-dfinity-bundle",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@dfinity/agent": "^3.4.3",
+    "@dfinity/auth-client": "^3.4.3",
+    "@dfinity/candid": "^3.4.3",
+    "@dfinity/principal": "^3.4.3",
+    "@dfinity/vetkeys": "^0.4.0",
+    "vite": "^8.0.3"
+  }
+}

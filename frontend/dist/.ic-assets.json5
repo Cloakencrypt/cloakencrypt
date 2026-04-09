@@ -1,0 +1,27 @@
+[
+  {
+    // Default security and caching headers for all assets
+    "match": "**/*",
+    "headers": {
+      "Cache-Control": "public, max-age=0, must-revalidate",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "Referrer-Policy": "strict-origin",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+      "Content-Security-Policy": "default-src 'none'; script-src 'self' 'unsafe-inline'; worker-src 'self'; connect-src https://icp-api.io https://identity.ic0.app https://*.icp0.io https://*.ic0.app; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google.com https://*.googleusercontent.com; frame-src https://identity.ic0.app; frame-ancestors 'none'; manifest-src 'self'; media-src 'self' blob:; base-uri 'self'; form-action 'self'"
+    },
+    "allow_raw_access": false
+  },
+  {
+    // Aggressive caching for hashed static assets
+    "match": "assets/**/*",
+    "headers": {
+      "Cache-Control": "public, max-age=31536000, immutable"
+    }
+  },
+  {
+    // SPA fallback: serve index.html for unmatched routes
+    "match": "**/*",
+    "enable_aliasing": true
+  }
+]
