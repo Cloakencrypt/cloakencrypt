@@ -1,109 +1,84 @@
-# IC Vault
+# Cloak
 
-A password manager built on the Internet Computer using Internet Identity for authentication and vetKeys for client-side encryption.
+Encrypted credential storage. Your passwords, cards, and secrets are encrypted on your device before they ever leave it. Only your passkey can unlock them.
 
-## Architecture
+**Live:** [cloakencrypt.com](https://www.cloakencrypt.com)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Browser (Frontend)                       │
-│                                                                 │
-│  ┌──────────────┐  ┌───────────────┐  ┌──────────────────────┐ │
-│  │   Internet    │  │  Transport    │  │   AES-256-GCM        │ │
-│  │   Identity    │  │  Key Pair     │  │   Encrypt/Decrypt    │ │
-│  │   (Passkey)   │  │  (Ephemeral)  │  │   (Client-side only) │ │
-│  └──────┬───────┘  └──────┬────────┘  └──────────┬───────────┘ │
-│         │                 │                       │             │
-└─────────┼─────────────────┼───────────────────────┼─────────────┘
-          │                 │                       │
-          ▼                 ▼                       ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Backend Canister (Rust)                      │
-│                                                                 │
-│  ┌──────────────┐  ┌───────────────┐  ┌──────────────────────┐ │
-│  │  Auth Guard   │  │  KeyManager   │  │   StableBTreeMap     │ │
-│  │  (Principal)  │  │  (vetKD API)  │  │   (Encrypted blobs)  │ │
-│  └──────────────┘  └──────┬────────┘  └──────────────────────┘ │
-│                           │                                     │
-└───────────────────────────┼─────────────────────────────────────┘
-                            │
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│              IC Threshold Key Infrastructure                     │
-│                                                                 │
-│  13+ subnet nodes cooperate to derive keys via vetKD protocol.  │
-│  No single node ever sees the raw key.                          │
-└─────────────────────────────────────────────────────────────────┘
-```
+## How it works
 
-## How It Works
+Cloak runs entirely on the [Internet Computer](https://internetcomputer.org). There is no traditional server. Your vault is stored as encrypted data on a tamper-proof network that no single entity controls.
 
-1. User authenticates with a passkey via Internet Identity (no master password)
-2. Frontend generates an ephemeral transport key pair
-3. Backend requests a vetKey derivation from the subnet, keyed on the user's principal
-4. The derived key is encrypted under the transport public key and returned
-5. Frontend decrypts the vetKey and derives an AES-256-GCM symmetric key
-6. All vault entries are encrypted/decrypted locally in the browser
-7. The canister only ever stores ciphertext
+- **Passkey authentication** via Internet Identity. No master password to remember or lose.
+- **Client-side encryption** using AES-256-GCM. The backend only ever sees ciphertext.
+- **Threshold key derivation** via vetKeys. Your encryption key is derived on-demand by the network and delivered encrypted to your device. No node ever sees the raw key.
 
-## Security Properties
+## Features
 
-- **Zero-knowledge storage:** The canister never sees plaintext passwords
-- **No master password:** Authentication is passkey-based via Internet Identity
-- **Threshold key derivation:** No single party holds the master key
-- **Deterministic recovery:** Same principal always derives the same key (multi-device support)
-- **Per-user isolation:** Different principals derive different keys
+- Store logins, credit cards, secure notes, and images
+- Password generator with strength meter
+- TOTP authenticator with QR code scanning
+- Secure sharing via time-limited, encrypted links
+- CSV import (1Password, Bitwarden, Chrome, generic)
+- Internationalization (English, German, French, Italian)
+- Chrome extension
+- Privacy mode (keyboard shortcut: P)
+- PWA installable on desktop and mobile
+- 15-minute idle timeout with full session teardown
+- Search and filtering across all entry types
 
-## Prerequisites
+## Security
 
-- [icp CLI](https://docs.internetcomputer.org/) (`npm install -g @icp-sdk/icp-cli @icp-sdk/ic-wasm`)
-- Rust with `wasm32-unknown-unknown` target (`rustup target add wasm32-unknown-unknown`)
-- Node.js >= 22
+- AES-256-GCM encryption, client-side only
+- vetKeys threshold key derivation (production `key_1`)
+- Anonymous principal rejection on all endpoints
+- Rate limiting (30 writes/minute per principal)
+- Per-user entry limits (500 entries)
+- 24-hour session TTL
+- Maintenance mode for safe canister upgrades
+- Idempotency keys on write endpoints
+- CSP headers: no external scripts, no external fonts, no CDN dependencies
+- All JavaScript dependencies bundled locally (zero runtime CDN loads)
+- 90-day freezing threshold on both canisters
 
-## Quick Start
+## Canisters
+
+| Canister | ID |
+|----------|----|
+| Backend  | `gdwim-7aaaa-aaaad-qln5q-cai` |
+| Frontend | `gexoy-syaaa-aaaad-qln5a-cai` |
+
+## Build
+
+### Backend
 
 ```bash
-# Start local network with Internet Identity
-icp network start -d
-
-# Deploy all canisters
-icp deploy
-
-# Open in browser
-# Visit the frontend canister URL shown in the deploy output
+icp build backend
+icp deploy backend -e ic
 ```
 
-## Project Structure
+### Frontend
 
-```
-ic-vault/
-├── icp.yaml              # ICP project configuration
-├── Cargo.toml            # Rust workspace
-├── backend/
-│   ├── Cargo.toml        # Backend dependencies (ic-vetkeys, ic-stable-structures)
-│   └── src/
-│       └── lib.rs        # Canister: vetKey management + encrypted vault storage
-└── frontend/
-    ├── package.json      # Frontend dependencies (@dfinity/vetkeys, @icp-sdk/auth)
-    ├── index.html        # Entry point
-    └── src/
-        ├── main.ts       # App shell, routing, UI rendering
-        ├── crypto.ts     # vetKey derivation, AES encrypt/decrypt
-        ├── icons.ts      # SVG icons
-        └── styles.css    # Dark theme design system
-```
+The frontend is a single HTML file with self-hosted fonts and a bundled JS dependency file.
 
-## Production Deployment
-
-For mainnet deployment, update the key name in `backend/src/lib.rs`:
-
-```rust
-// Change from test_key_1 to key_1
-name: "key_1".to_string(),
-```
-
-Then deploy:
+To rebuild the dependency bundle:
 
 ```bash
-icp deploy -e ic
+cd frontend/bundler
+npm install
+npm run build
 ```
+
+This outputs `frontend/dist/assets/dfinity-bundle.js`.
+
+### Chrome Extension
+
+```bash
+cd cloak-extension
+node build.js
+```
+
+Outputs to `cloak-extension/dist/`.
+
+## License
+
+MIT
