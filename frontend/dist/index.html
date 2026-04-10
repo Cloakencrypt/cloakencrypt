@@ -881,10 +881,11 @@ button { cursor: pointer; background: none; border: none; }
     border: 1.5px solid var(--ink);
 }
 
-.str-weak { background: transparent; border-color: var(--ink-dim); }
-.str-fair { background: var(--ink-dim); border-color: var(--ink-dim); }
-.str-good { background: var(--ink); border-color: var(--ink); opacity: 0.7; }
-.str-strong { background: var(--ink); border-color: var(--ink); }
+.str-weak { background: transparent; border-color: #c0392b; }
+.str-fair { background: #e67e22; border-color: #e67e22; }
+.str-good { background: #f1c40f; border-color: #f1c40f; }
+.str-strong { background: #27ae60; border-color: #27ae60; }
+.str-cloak { background: var(--ink); border-color: var(--ink); }
 
 .fav-star {
     font-size: 16px;
@@ -1103,10 +1104,11 @@ button { cursor: pointer; background: none; border: none; }
     border-radius: 1px;
 }
 
-.pw-strength-bar.str-1 span:nth-child(1) { background: var(--ink); }
-.pw-strength-bar.str-2 span:nth-child(-n+2) { background: var(--ink); opacity: 0.7; }
-.pw-strength-bar.str-3 span:nth-child(-n+3) { background: var(--ink); opacity: 0.6; }
-.pw-strength-bar.str-4 span { background: var(--ink); }
+.pw-strength-bar.str-1 span:nth-child(1) { background: #c0392b; }
+.pw-strength-bar.str-2 span:nth-child(-n+2) { background: #e67e22; }
+.pw-strength-bar.str-3 span:nth-child(-n+3) { background: #f1c40f; }
+.pw-strength-bar.str-4 span:nth-child(-n+4) { background: #27ae60; }
+.pw-strength-bar.str-5 span { background: var(--ink); }
 
 .totp-section {
     border: 1px solid rgba(139,58,42,0.2);
@@ -1489,7 +1491,12 @@ textarea.form-input {
     color: var(--ink);
     word-break: break-all;
     min-height: 20px;
-    margin-bottom: 8px;
+    flex: 1;
+    padding: 6px 10px;
+    background: rgba(139,58,42,0.05);
+    border: 1px solid rgba(139,58,42,0.15);
+    border-radius: 3px;
+    user-select: all;
 }
 
 .pw-gen-strength {
@@ -1520,10 +1527,28 @@ textarea.form-input {
 }
 
 .pw-gen-controls {
+    margin-bottom: 10px;
+}
+
+.pw-gen-length-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.pw-gen-options-row {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.pw-gen-output {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .pw-gen-controls label {
@@ -1547,20 +1572,28 @@ textarea.form-input {
 
 .extract-btn {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 16px;
     font-weight: 700;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 4px 12px;
+    background: none;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     cursor: pointer;
-    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
     transition: all 0.15s;
+    opacity: 0.6;
 }
 
 .extract-btn:hover {
-    background: #6b2a1e;
+    opacity: 1;
+    background: var(--ink);
+    color: var(--paper);
 }
 
 .modal-footer {
@@ -3780,23 +3813,28 @@ html {
 
             <div class="pw-gen-section" id="pw-gen-section" style="display:none;">
                 <div class="pw-gen-title">Password Generator</div>
+                <div class="pw-gen-controls">
+                    <div class="pw-gen-length-row">
+                        <label>Length: <span id="pw-len-val" style="font-weight:700;min-width:18px;display:inline-block;">20</span></label>
+                        <input type="range" id="pw-len" min="8" max="64" value="20" style="flex:1;">
+                    </div>
+                    <div class="pw-gen-options-row">
+                        <label><input type="checkbox" id="pw-upper" checked> A-Z</label>
+                        <label><input type="checkbox" id="pw-numbers" checked> 0-9</label>
+                        <label><input type="checkbox" id="pw-symbols" checked> !@#</label>
+                        <label><input type="checkbox" id="pw-passphrase"> Passphrase</label>
+                    </div>
+                </div>
                 <div class="pw-gen-grid" id="pw-gen-grid"></div>
-                <div class="pw-gen-result" id="pw-gen-result"></div>
+                <div class="pw-gen-output">
+                    <div class="pw-gen-result" id="pw-gen-result"></div>
+                    <button class="extract-btn" id="pw-extract-btn" title="Generate new password">↻</button>
+                </div>
                 <div class="pw-gen-strength" id="pw-gen-strength" style="display:none;">
                     <div class="pw-gen-strength-bar" id="pw-gen-strength-bar">
-                        <span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span>
                     </div>
                     <span class="pw-gen-strength-label" id="pw-gen-strength-label"></span>
-                </div>
-                <div class="pw-gen-controls">
-                    <label>Len: <span id="pw-len-val">20</span>
-                        <input type="range" id="pw-len" min="8" max="64" value="20">
-                    </label>
-                    <label><input type="checkbox" id="pw-upper" checked> A-Z</label>
-                    <label><input type="checkbox" id="pw-numbers" checked> 0-9</label>
-                    <label><input type="checkbox" id="pw-symbols" checked> !@#</label>
-                    <label><input type="checkbox" id="pw-passphrase"> Passphrase</label>
-                    <button class="extract-btn" id="pw-extract-btn">Regenerate</button>
                 </div>
             </div>
 
@@ -4510,22 +4548,25 @@ function passwordStrength(pw) {
     let score = 0;
     if (pw.length >= 8) score++;
     if (pw.length >= 12) score++;
+    if (pw.length >= 20) score++;
     if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
     if (/\d/.test(pw)) score++;
     if (/[^A-Za-z0-9]/.test(pw)) score++;
+    if (pw.length >= 28 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /\d/.test(pw) && /[^A-Za-z0-9]/.test(pw)) score++;
     if (pw.length < 8) return 1;
     if (score <= 2) return 1;
     if (score <= 3) return 2;
     if (score <= 4) return 3;
-    return 4;
+    if (score <= 5) return 4;
+    return 5;
 }
 
 function strengthClass(level) {
-    return ['', 'str-weak', 'str-fair', 'str-good', 'str-strong'][level] || '';
+    return ['', 'str-weak', 'str-fair', 'str-good', 'str-strong', 'str-cloak'][level] || '';
 }
 
 function strengthLabel(level) {
-    return ['', 'WEAK', 'FAIR', 'GOOD', 'STRONG'][level] || '';
+    return ['', 'WEAK', 'FAIR', 'GOOD', 'STRONG', 'CLOAK'][level] || '';
 }
 
 function isWeak(item) {
@@ -5604,7 +5645,7 @@ function renderLoginDetail(item) {
                 </div>
             </div>
             <div class="pw-strength-bar str-${str}">
-                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
             </div>
             <div style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;opacity:0.45;margin-top:4px;letter-spacing:0.04em;">${strengthLabel(str)}</div>
         </div>
@@ -6644,11 +6685,14 @@ function extractPassword() {
     const barEl = document.getElementById('pw-gen-strength-bar');
     const labelEl = document.getElementById('pw-gen-strength-label');
     strengthEl.style.display = 'flex';
-    barEl.innerHTML = '<span></span><span></span><span></span><span></span>';
+    barEl.innerHTML = '<span></span><span></span><span></span><span></span><span></span>';
+    const colors = ['', '#c0392b', '#e67e22', '#f1c40f', '#27ae60', 'var(--ink)'];
     for (let i = 0; i < str; i++) {
-        barEl.children[i].style.background = 'var(--ink)';
+        barEl.children[i].style.background = colors[str] || 'var(--ink)';
     }
     labelEl.textContent = strengthLabel(str);
+    labelEl.style.fontWeight = str === 5 ? '700' : '400';
+    labelEl.style.color = str === 5 ? 'var(--ink)' : '';
 
     // Fill into password field
     const pwField = document.getElementById('field-password');
