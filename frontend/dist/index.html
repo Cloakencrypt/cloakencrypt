@@ -6078,22 +6078,24 @@ function initNavigation() {
 
             // Settings nav item
             if (nav.id === 'nav-settings') {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.nav-item, .watchtower-item').forEach(n => n.classList.remove('active'));
                 nav.classList.add('active');
                 currentFilter = 'settings';
                 selectedId = null;
                 appFrame.classList.add('fullwidth-view');
+                renderList();
                 renderSettings();
                 return;
             }
 
             // Generator nav item
             if (nav.id === 'nav-generator') {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.nav-item, .watchtower-item').forEach(n => n.classList.remove('active'));
                 nav.classList.add('active');
                 currentFilter = 'generator';
                 selectedId = null;
                 appFrame.classList.add('fullwidth-view');
+                renderList();
                 renderGeneratorView();
                 return;
             }
