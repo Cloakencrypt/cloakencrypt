@@ -1346,16 +1346,20 @@ button { cursor: pointer; background: none; border: none; }
     width: 560px;
     max-width: 96vw;
     max-height: 90vh;
-    overflow-y: auto;
     box-shadow: 0 30px 60px rgba(0,0,0,0.8);
     border-radius: 20px;
     padding: 20px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-inner {
     border: 1px solid var(--ink);
     padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .modal-title {
@@ -1600,9 +1604,10 @@ textarea.form-input {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 20px;
-    padding-top: 16px;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 1px solid var(--ink);
+    flex-shrink: 0;
 }
 
 .modal-btn {
@@ -3838,10 +3843,10 @@ html {
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button class="modal-btn" id="modal-cancel">Cancel</button>
-                <button class="modal-btn primary" id="modal-save">Save</button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn" id="modal-cancel">Cancel</button>
+            <button class="modal-btn primary" id="modal-save">Save</button>
         </div>
     </div>
 </div>
