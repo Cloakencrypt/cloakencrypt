@@ -915,6 +915,14 @@ button { cursor: pointer; background: none; border: none; }
     position: relative;
 }
 
+/* Full-width view: hide list pane, detail spans both columns */
+.app-frame.fullwidth-view .list-pane {
+    display: none;
+}
+.app-frame.fullwidth-view .detail-pane {
+    grid-column: 2 / -1;
+}
+
 .detail-empty {
     display: flex;
     flex-direction: column;
@@ -5460,6 +5468,7 @@ function selectEntry(id) {
     // If in settings view, switch back to 'all' filter
     if (currentFilter === 'settings' || currentFilter === 'generator') {
         currentFilter = 'all';
+        document.querySelector('.app-frame').classList.remove('fullwidth-view');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         const allNav = document.querySelector('.nav-item[data-filter="all"]');
         if (allNav) allNav.classList.add('active');
@@ -6063,12 +6072,15 @@ function renderNoteDetail(item) {
 function initNavigation() {
     document.querySelectorAll('.nav-item, .watchtower-item').forEach(nav => {
         nav.addEventListener('click', () => {
+            const appFrame = document.querySelector('.app-frame');
+
             // Settings nav item
             if (nav.id === 'nav-settings') {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 nav.classList.add('active');
                 currentFilter = 'settings';
                 selectedId = null;
+                appFrame.classList.add('fullwidth-view');
                 renderSettings();
                 return;
             }
@@ -6079,10 +6091,13 @@ function initNavigation() {
                 nav.classList.add('active');
                 currentFilter = 'generator';
                 selectedId = null;
+                appFrame.classList.add('fullwidth-view');
                 renderGeneratorView();
                 return;
             }
 
+            // Regular nav: remove fullwidth
+            appFrame.classList.remove('fullwidth-view');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (nav.classList.contains('nav-item')) nav.classList.add('active');
             currentFilter = nav.dataset.filter;
