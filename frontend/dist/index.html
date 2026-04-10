@@ -3796,7 +3796,7 @@ html {
                     <label><input type="checkbox" id="pw-numbers" checked> 0-9</label>
                     <label><input type="checkbox" id="pw-symbols" checked> !@#</label>
                     <label><input type="checkbox" id="pw-passphrase"> Passphrase</label>
-                    <button class="extract-btn" id="pw-extract-btn">Extract</button>
+                    <button class="extract-btn" id="pw-extract-btn">Regenerate</button>
                 </div>
             </div>
 
@@ -6096,11 +6096,15 @@ function initModal() {
     // Password generator
     document.getElementById('pw-len').addEventListener('input', (e) => {
         document.getElementById('pw-len-val').textContent = e.target.value;
+        extractPassword();
     });
 
     document.getElementById('pw-extract-btn').addEventListener('click', extractPassword);
+    document.getElementById('pw-upper').addEventListener('change', () => extractPassword());
+    document.getElementById('pw-numbers').addEventListener('change', () => extractPassword());
+    document.getElementById('pw-symbols').addEventListener('change', () => extractPassword());
     document.getElementById('pw-passphrase').addEventListener('change', (e) => {
-        if (e.target.checked) extractPassword();
+        extractPassword();
     });
 
     // TOTP button delegation — buttons are rendered dynamically so use delegation
@@ -6162,6 +6166,8 @@ window.showPwGenerator = function() {
     const trigger = document.getElementById('pw-gen-trigger');
     if (trigger) trigger.style.display = 'none';
     startPwGen();
+    // Auto-generate a password immediately so the user sees a result
+    setTimeout(() => extractPassword(), 300);
 };
 
 function renderModalFields(item) {
