@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloak — Encrypted Credential Storage</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; worker-src 'self'; connect-src https://icp-api.io https://identity.ic0.app https://*.icp0.io https://*.ic0.app; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google.com https://*.googleusercontent.com; frame-src https://identity.ic0.app; manifest-src 'self'; media-src 'self' blob:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; worker-src 'self'; connect-src https://icp-api.io https://identity.ic0.app https://id.ai https://*.icp0.io https://*.ic0.app; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google.com https://*.googleusercontent.com; frame-src https://identity.ic0.app https://id.ai; manifest-src 'self'; media-src 'self' blob:;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin">
     <link rel="icon" href="./favicon.ico" sizes="any">
@@ -3977,7 +3977,7 @@ import { HttpAgent, Actor, AuthClient, IDL, Principal, TransportSecretKey, Deriv
 
 // ---- CONSTANTS ----
 const BACKEND_CANISTER_ID = 'gdwim-7aaaa-aaaad-qln5q-cai';
-const II_URL = 'https://identity.ic0.app';
+const II_URL = 'https://id.ai';
 const IC_HOST = 'https://icp-api.io';
 
 // ---- IDL FACTORY ----
