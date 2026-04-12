@@ -5,9 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cloak Documentation</title>
   <meta name="description" content="Documentation for Cloak — the password manager that can't betray you. Protected by math, not promises.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url('../assets/fonts/inter-latin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url('../assets/fonts/inter-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url('../assets/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url('../assets/fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF;
+  }
+  </style>
   <style>
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -901,7 +930,7 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <a href="#introduction" class="sidebar-logo">
-        <img src="logo-192.png" alt="Cloak logo" width="32" height="32">
+        <img src="../logo-192.png" alt="Cloak logo" width="32" height="32">
         <div>
           <span class="sidebar-logo-text">Cloak</span>
           <div class="sidebar-label">Documentation</div>
@@ -1244,7 +1273,7 @@
 
         <h3>Mark</h3>
         <div class="logo-display">
-          <img src="logo-192.png" alt="Cloak hooded lock logo" width="120" height="120">
+          <img src="../logo-192.png" alt="Cloak hooded lock logo" width="120" height="120">
           <div class="logo-display-info">
             <strong>Hooded Lock Mark</strong>
             The Cloak logo depicts a padlock beneath a hood — representing hidden encryption. Use at minimum 32px for digital applications. The mark works on both light and dark backgrounds.
