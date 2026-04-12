@@ -1178,6 +1178,48 @@
         <div class="reg-mark">05 — Changelog</div>
         <h2>Changelog</h2>
 
+        <!-- v0.13.0 -->
+        <div class="changelog-version">
+          <div class="version-tag">v0.13.0</div>
+          <div class="version-date">2026-04-13</div>
+
+          <div class="changelog-category">
+            <h4>Added</h4>
+            <ul>
+              <li>Documentation site accessible at /docs/ within the app</li>
+              <li>Book icon in footer linking to documentation</li>
+              <li>Official Cloak logo (hooded lock) on login screen, app header, and privacy lock screen</li>
+              <li>Social links in footer: X, GitHub, Medium</li>
+              <li>Password generator available as a standalone view in the sidebar</li>
+              <li>Password generator appears inline below the password field when adding or editing entries</li>
+              <li>5-level password strength indicator: Weak, Fair, Good, Strong, CLOAK</li>
+              <li>Password auto-generates when opening the generator (no extra click needed)</li>
+              <li>Changing length, characters, or mode instantly regenerates the password</li>
+              <li>GitHub source link and "What's New" link in Settings</li>
+              <li>Version number displayed in Settings</li>
+            </ul>
+          </div>
+
+          <div class="changelog-category">
+            <h4>Changed</h4>
+            <ul>
+              <li>Sign in now uses id.ai (new Internet Identity URL)</li>
+              <li>Settings and Generator views use the full screen width</li>
+              <li>Privacy lock screen shows the Cloak logo instead of a generic lock icon</li>
+              <li>Modal popups scroll content while keeping corner frames and buttons fixed at the edges</li>
+            </ul>
+          </div>
+
+          <div class="changelog-category">
+            <h4>Fixed</h4>
+            <ul>
+              <li>Settings page showing a vault entry instead of settings content</li>
+              <li>"New Item" button causing an error after recent updates</li>
+              <li>Password generator not producing a result until a second click</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- v0.12.0 -->
         <div class="changelog-version">
           <div class="version-tag">v0.12.0</div>
@@ -1186,55 +1228,38 @@
           <div class="changelog-category">
             <h4>Added</h4>
             <ul>
-              <li>Password generator in sidebar menu (standalone, outside of item creation)</li>
-              <li>Password generator inline under password field in add/edit modal</li>
-              <li>5-level password strength meter: Weak, Fair, Good, Strong, CLOAK</li>
-              <li>Color-coded strength bars (red, orange, yellow, green, ink)</li>
-              <li>Live password regeneration on every option change</li>
-              <li>Trust badges on login screen</li>
-              <li>Social links in footer (X, GitHub, Medium)</li>
-              <li>PWA install icon in both login and app footers</li>
-              <li>App logo on privacy lock screen</li>
-              <li>App logo on login screen (top right) and app header bar</li>
-              <li>Maintenance mode for safe canister upgrades</li>
-              <li>Idempotency keys on add_entry (5-minute dedup window)</li>
-              <li>O(1) per-user share counter (replaced O(n) full-table scan)</li>
-              <li>Changelog</li>
+              <li>PWA support: install Cloak as an app on desktop and mobile</li>
+              <li>Download icon in footer with install prompt</li>
+              <li>Maintenance mode for safe updates</li>
+              <li>Duplicate entry prevention on network retries</li>
             </ul>
           </div>
 
           <div class="changelog-category">
             <h4>Changed</h4>
             <ul>
-              <li>Settings and Generator views now use full width (hide entry list column)</li>
-              <li>Modal scrolling moved to inner content (corner marks stay at card edges)</li>
-              <li>Rotating taglines shortened to fit all viewport sizes</li>
-              <li>Desktop breakpoint lowered from 1023px to 768px for full-bleed mobile layout</li>
-              <li>Hex data panel font increased to fill header box</li>
-              <li>All @dfinity dependencies bundled locally (removed esm.sh CDN)</li>
-              <li>Google Fonts replaced with self-hosted woff2 files</li>
-              <li>CSP tightened: no external scripts, fonts, or CDN sources</li>
-              <li>Idle timeout now clears AES key, vault data, and forces full re-auth</li>
+              <li>All code libraries bundled locally (no external CDN loading)</li>
+              <li>Fonts self-hosted (no requests to Google)</li>
+              <li>Rotating taglines shortened to fit all screen sizes</li>
+              <li>Improved layout on small desktop and tablet screens</li>
+              <li>Hex data panel fills the full header area</li>
             </ul>
           </div>
 
           <div class="changelog-category">
             <h4>Fixed</h4>
             <ul>
-              <li>Modal corner registration marks appearing in middle of window on overflow</li>
-              <li>Meta strip text overflow on narrow viewports</li>
-              <li>Login screen layout breaking at 769–1023px viewport widths</li>
-              <li>Favicon background color mismatch with app header</li>
+              <li>Layout breaking between 769px and 1023px screen widths</li>
+              <li>Text overflowing in the rotating tagline area</li>
             </ul>
           </div>
 
           <div class="changelog-category">
             <h4>Security</h4>
             <ul>
-              <li>Freezing threshold set to 90 days on both canisters</li>
-              <li>worker-src and manifest-src added to CSP for PWA support</li>
-              <li>StableCell error handling comments corrected</li>
-              <li>All 11 ICP security skills audit completed (0 critical, 0 high)</li>
+              <li>90-day freezing threshold on both canisters</li>
+              <li>Tightened content security policy</li>
+              <li>Completed security audit (0 critical, 0 high findings)</li>
             </ul>
           </div>
         </div>
@@ -1248,18 +1273,15 @@
             <h4>Added</h4>
             <ul>
               <li>Initial release</li>
-              <li>Passkey authentication via Internet Identity</li>
-              <li>Client-side AES-256-GCM encryption with vetKeys</li>
-              <li>Vault entries: logins, credit cards, secure notes, images</li>
-              <li>TOTP authenticator with QR scanning</li>
-              <li>Secure sharing with time-limited encrypted links</li>
-              <li>Self-destruct shares</li>
-              <li>CSV import (1Password, Bitwarden, Chrome, generic)</li>
+              <li>Sign in with passkey (fingerprint, face, or PIN)</li>
+              <li>Encrypted storage for logins, credit cards, secure notes, and images</li>
+              <li>TOTP authenticator with QR code scanning</li>
+              <li>Secure sharing with time-limited links and optional self-destruct</li>
+              <li>Import from 1Password, Bitwarden, Chrome, or any CSV</li>
               <li>Chrome extension</li>
-              <li>Privacy mode (P key)</li>
-              <li>Internationalization (EN, DE, FR, IT)</li>
-              <li>Rate limiting (30 writes/min per principal)</li>
-              <li>Per-user entry limits (500 entries)</li>
+              <li>Privacy mode (press P to hide all data)</li>
+              <li>Available in English, German, French, and Italian</li>
+              <li>15-minute auto-lock after inactivity</li>
               <li>Custom domain: cloakencrypt.com</li>
             </ul>
           </div>

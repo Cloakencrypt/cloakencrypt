@@ -2,61 +2,67 @@
 
 All notable changes to Cloak are documented here.
 
+## v0.13.0 (2026-04-13)
+
+### Added
+- Documentation site accessible at /docs/ within the app
+- Book icon in footer linking to documentation
+- Official Cloak logo (hooded lock) on login screen, app header, and privacy lock screen
+- Social links in footer: X, GitHub, Medium
+- Password generator available as a standalone view in the sidebar
+- Password generator appears inline below the password field when adding or editing entries
+- 5-level password strength indicator: Weak, Fair, Good, Strong, CLOAK
+- Password auto-generates when opening the generator (no extra click needed)
+- Changing length, characters, or mode instantly regenerates the password
+- GitHub source link and "What's New" link in Settings
+- Version number displayed in Settings
+
+### Changed
+- Sign in now uses id.ai (new Internet Identity URL)
+- Settings and Generator views use the full screen width
+- Privacy lock screen shows the Cloak logo instead of a generic lock icon
+- Modal popups scroll content while keeping corner frames and buttons fixed at the edges
+
+### Fixed
+- Settings page showing a vault entry instead of settings content
+- "New Item" button causing an error after recent updates
+- Password generator not producing a result until a second click
+
 ## v0.12.0 (2026-04-10)
 
 ### Added
-- Password generator in sidebar menu (standalone, outside of item creation)
-- Password generator inline under password field in add/edit modal
-- 5-level password strength meter: Weak, Fair, Good, Strong, CLOAK
-- Color-coded strength bars (red, orange, yellow, green, ink)
-- Live password regeneration on every option change
-- Trust badges on login screen
-- Social links in footer (X, GitHub, Medium)
-- PWA install icon in both login and app footers
-- App logo on privacy lock screen
-- App logo on login screen (top right) and app header bar
-- Maintenance mode for safe canister upgrades
-- Idempotency keys on add_entry (5-minute dedup window)
-- O(1) per-user share counter (replaced O(n) full-table scan)
-- Changelog
+- PWA support: install Cloak as an app on desktop and mobile
+- Download icon in footer with install prompt
+- Maintenance mode for safe updates
+- Duplicate entry prevention on network retries
 
 ### Changed
-- Settings and Generator views now use full width (hide entry list column)
-- Modal scrolling moved to inner content (corner marks stay at card edges)
-- Rotating taglines shortened to fit all viewport sizes
-- Desktop breakpoint lowered from 1023px to 768px for full-bleed mobile layout
-- Hex data panel font increased to fill header box
-- All @dfinity dependencies bundled locally (removed esm.sh CDN)
-- Google Fonts replaced with self-hosted woff2 files
-- CSP tightened: no external scripts, fonts, or CDN sources
-- Idle timeout now clears AES key, vault data, and forces full re-auth
+- All code libraries bundled locally (no external CDN loading)
+- Fonts self-hosted (no requests to Google)
+- Rotating taglines shortened to fit all screen sizes
+- Improved layout on small desktop and tablet screens
+- Hex data panel fills the full header area
 
 ### Fixed
-- Modal corner registration marks appearing in middle of window on overflow
-- Meta strip text overflow on narrow viewports
-- Login screen layout breaking at 769-1023px viewport widths
-- Favicon background color mismatch with app header
+- Layout breaking between 769px and 1023px screen widths
+- Text overflowing in the rotating tagline area
 
 ### Security
-- Freezing threshold set to 90 days on both canisters
-- worker-src and manifest-src added to CSP for PWA support
-- StableCell error handling comments corrected
-- All 11 ICP security skills audit completed (0 critical, 0 high)
+- 90-day freezing threshold on both canisters
+- Tightened content security policy
+- Completed security audit (0 critical, 0 high findings)
 
 ## v0.11.0 (2026-04-02)
 
 ### Added
 - Initial release
-- Passkey authentication via Internet Identity
-- Client-side AES-256-GCM encryption with vetKeys
-- Vault entries: logins, credit cards, secure notes, images
-- TOTP authenticator with QR scanning
-- Secure sharing with time-limited encrypted links
-- Self-destruct shares
-- CSV import (1Password, Bitwarden, Chrome, generic)
+- Sign in with passkey (fingerprint, face, or PIN)
+- Encrypted storage for logins, credit cards, secure notes, and images
+- TOTP authenticator with QR code scanning
+- Secure sharing with time-limited links and optional self-destruct
+- Import from 1Password, Bitwarden, Chrome, or any CSV
 - Chrome extension
-- Privacy mode (P key)
-- Internationalization (EN, DE, FR, IT)
-- Rate limiting (30 writes/min per principal)
-- Per-user entry limits (500 entries)
+- Privacy mode (press P to hide all data)
+- Available in English, German, French, and Italian
+- 15-minute auto-lock after inactivity
 - Custom domain: cloakencrypt.com
