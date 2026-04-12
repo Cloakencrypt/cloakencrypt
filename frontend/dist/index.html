@@ -3976,7 +3976,7 @@ html {
 import { HttpAgent, Actor, AuthClient, IDL, Principal, TransportSecretKey, DerivedPublicKey, EncryptedVetKey } from './assets/dfinity-bundle.js';
 
 // ---- CONSTANTS ----
-const CLOAK_VERSION = 'v0.13.0';
+const CLOAK_VERSION = 'v0.13.1';
 const BACKEND_CANISTER_ID = 'gdwim-7aaaa-aaaad-qln5q-cai';
 const II_URL = 'https://id.ai';
 const IC_HOST = 'https://icp-api.io';
@@ -4106,6 +4106,10 @@ const translations = {
         'settings.import_desc': 'Import from 1Password, Bitwarden, LastPass, Chrome, Firefox, or Apple Keychain.',
         'settings.import_btn': '> Select CSV File',
         'settings.import_security': 'Your CSV is processed entirely in your browser. Nothing is sent unencrypted.',
+        'settings.export': 'Export Credentials',
+        'settings.export_desc': 'Download all your vault entries as a CSV file. The file is decrypted and generated entirely in your browser.',
+        'settings.export_btn': '> Download CSV',
+        'settings.export_security': 'The exported file contains your passwords in plain text. Store it securely or delete it after use.',
         'settings.about': 'About',
         'settings.version': '__VERSION__',
         'settings.sign_out': 'Sign Out',
@@ -4212,6 +4216,10 @@ const translations = {
         'settings.import_desc': 'Importieren Sie aus 1Password, Bitwarden, LastPass, Chrome, Firefox oder Apple Keychain.',
         'settings.import_btn': '> CSV-Datei auswählen',
         'settings.import_security': 'Ihre CSV wird vollständig in Ihrem Browser verarbeitet. Nichts wird unverschlüsselt gesendet.',
+        'settings.export': 'Zugangsdaten exportieren',
+        'settings.export_desc': 'Laden Sie alle Ihre Tresor-Einträge als CSV-Datei herunter. Die Datei wird vollständig in Ihrem Browser entschlüsselt und erstellt.',
+        'settings.export_btn': '> CSV herunterladen',
+        'settings.export_security': 'Die exportierte Datei enthält Ihre Passwörter im Klartext. Speichern Sie sie sicher oder löschen Sie sie nach Gebrauch.',
         'settings.about': 'Über',
         'settings.version': '__VERSION__',
         'settings.sign_out': 'Abmelden',
@@ -4319,6 +4327,10 @@ const translations = {
         'settings.import_desc': 'Importez depuis 1Password, Bitwarden, LastPass, Chrome, Firefox ou Apple Keychain.',
         'settings.import_btn': '> Sélectionner un fichier CSV',
         'settings.import_security': "Votre CSV est traité entièrement dans votre navigateur. Rien n'est envoyé non chiffré.",
+        'settings.export': 'Exporter les identifiants',
+        'settings.export_desc': 'Téléchargez tous vos identifiants en fichier CSV. Le fichier est déchiffré et généré entièrement dans votre navigateur.',
+        'settings.export_btn': '> Télécharger CSV',
+        'settings.export_security': 'Le fichier exporté contient vos mots de passe en clair. Conservez-le en sécurité ou supprimez-le après utilisation.',
         'settings.about': 'À propos',
         'settings.version': '__VERSION__',
         'settings.sign_out': 'Déconnexion',
@@ -4425,6 +4437,10 @@ const translations = {
         'settings.import_desc': 'Importa da 1Password, Bitwarden, LastPass, Chrome, Firefox o Apple Keychain.',
         'settings.import_btn': '> Seleziona file CSV',
         'settings.import_security': 'Il tuo CSV viene elaborato interamente nel browser. Nulla viene inviato non crittografato.',
+        'settings.export': 'Esporta credenziali',
+        'settings.export_desc': 'Scarica tutte le voci del tuo archivio come file CSV. Il file viene decifrato e generato interamente nel browser.',
+        'settings.export_btn': '> Scarica CSV',
+        'settings.export_security': 'Il file esportato contiene le tue password in chiaro. Conservalo in modo sicuro o eliminalo dopo l\'uso.',
         'settings.about': 'Informazioni',
         'settings.version': '__VERSION__',
         'settings.sign_out': 'Disconnetti',
@@ -5628,6 +5644,13 @@ function renderSettings() {
             </div>
 
             <div class="settings-section">
+                <h3>${t('settings.export')}</h3>
+                <p>${t('settings.export_desc')}</p>
+                <button class="settings-import-btn" id="settings-export-btn">${t('settings.export_btn')}</button>
+                <div class="settings-security-note">&#9632; ${t('settings.export_security')}</div>
+            </div>
+
+            <div class="settings-section">
                 <h3>${t('settings.about')}</h3>
                 <div class="settings-version">Cloak ${CLOAK_VERSION}</div>
                 <div class="settings-about-sub">Encrypted Credential Storage</div>
@@ -5655,6 +5678,47 @@ function renderSettings() {
         settingsImportBtn.addEventListener('click', () => {
             if (!aesKey) { showToast('Please sign in before importing.', true); return; }
             openImportModal();
+        });
+    }
+
+    // Wire export button
+    const settingsExportBtn = document.getElementById('settings-export-btn');
+    if (settingsExportBtn) {
+        settingsExportBtn.addEventListener('click', async () => {
+            if (!aesKey) { window.showToast('Please sign in before exporting.', true); return; }
+            try {
+                settingsExportBtn.disabled = true;
+                settingsExportBtn.textContent = 'Exporting...';
+                // Build CSV from decrypted vault data
+                const headers = ['type', 'title', 'username', 'password', 'url', 'notes', 'cardHolder', 'cardNumber', 'cardExpiry', 'cardCVV', 'totp'];
+                const escCsv = (v) => {
+                    if (!v) return '';
+                    const s = String(v);
+                    if (s.includes(',') || s.includes('"') || s.includes('\n')) return '"' + s.replace(/"/g, '""') + '"';
+                    return s;
+                };
+                let csv = headers.join(',') + '\n';
+                for (const item of vaultData) {
+                    const row = headers.map(h => escCsv(item[h] || ''));
+                    csv += row.join(',') + '\n';
+                }
+                // Download
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cloak-export-' + new Date().toISOString().slice(0, 10) + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                window.showToast('Vault exported as CSV (' + vaultData.length + ' entries)');
+            } catch (e) {
+                window.showToast('Export failed: ' + e.message, true);
+            } finally {
+                settingsExportBtn.disabled = false;
+                settingsExportBtn.textContent = t('settings.export_btn');
+            }
         });
     }
 

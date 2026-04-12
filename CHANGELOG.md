@@ -2,6 +2,14 @@
 
 All notable changes to Cloak are documented here.
 
+## v0.13.1 (2026-04-13)
+
+### Added
+- Export all vault entries as a CSV file from Settings
+- Exported file includes all entry types (logins, cards, notes)
+- File is decrypted and generated entirely in your browser
+- Warning displayed about plaintext passwords in the export
+
 ## v0.13.0 (2026-04-13)
 
 ### Added

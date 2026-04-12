@@ -5,7 +5,7 @@ canisters:
     recipe:
       type: "@dfinity/rust@v3.2.0"
       configuration:
-        package: cloak_backend
+        package: ic_vault_backend
 
   - name: frontend
     recipe:

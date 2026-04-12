@@ -1,5 +1,5 @@
 [package]
-name = "cloak_backend"
+name = "ic_vault_backend"
 version = "0.1.0"
 edition = "2021"
 
