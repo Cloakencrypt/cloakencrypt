@@ -6148,7 +6148,11 @@ function initNavigation() {
                 currentFilter = 'settings';
                 selectedId = null;
                 appFrame.classList.add('fullwidth-view');
-                renderList();
+                // Clear detail pane first, then render settings
+                document.getElementById('detail-empty').style.display = 'none';
+                document.getElementById('detail-content').style.display = 'block';
+                document.getElementById('detail-content').innerHTML = '';
+                document.getElementById('entry-list').innerHTML = '';
                 renderSettings();
                 return;
             }
@@ -6160,7 +6164,11 @@ function initNavigation() {
                 currentFilter = 'generator';
                 selectedId = null;
                 appFrame.classList.add('fullwidth-view');
-                renderList();
+                // Clear detail pane first, then render generator
+                document.getElementById('detail-empty').style.display = 'none';
+                document.getElementById('detail-content').style.display = 'block';
+                document.getElementById('detail-content').innerHTML = '';
+                document.getElementById('entry-list').innerHTML = '';
                 renderGeneratorView();
                 return;
             }
