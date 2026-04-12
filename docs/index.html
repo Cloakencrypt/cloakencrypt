@@ -20,23 +20,23 @@
       scroll-padding-top: 5rem;
     }
 
-    /* ── Tokens ── */
+    /* ── Tokens — Light / Paper / Parchment ── */
     :root {
-      --bg: #1a1a1a;
-      --bg-elevated: #212121;
-      --bg-sidebar: #151515;
-      --paper: #c8c4bc;
-      --paper-muted: #918e87;
-      --paper-faint: #5e5c58;
+      --bg: #c8c4bc;
+      --bg-elevated: #d4d0c8;
+      --bg-sidebar: #bfbbb3;
+      --text: #1a1a1a;
+      --text-muted: #4a4740;
+      --text-faint: #7a776e;
       --ink: #8b3a2a;
       --ink-hover: #a34a38;
-      --ink-dim: rgba(139, 58, 42, 0.15);
-      --border: #2e2e2e;
-      --border-subtle: #262626;
+      --ink-dim: rgba(139, 58, 42, 0.12);
+      --ink-dim-strong: rgba(139, 58, 42, 0.18);
+      --border: rgba(139, 58, 42, 0.18);
+      --border-subtle: rgba(26, 26, 26, 0.1);
       --font-body: 'Inter', 'Helvetica Neue', sans-serif;
       --font-mono: 'JetBrains Mono', 'Consolas', monospace;
       --sidebar-w: 280px;
-      --header-h: 0px;
       --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.8rem);
       --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
       --text-base: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
@@ -51,14 +51,14 @@
       min-height: 100dvh;
       font-family: var(--font-body);
       font-size: var(--text-base);
-      color: var(--paper);
+      color: var(--text);
       background: var(--bg);
       line-height: 1.7;
     }
 
     ::selection {
-      background: rgba(139, 58, 42, 0.35);
-      color: var(--paper);
+      background: rgba(139, 58, 42, 0.25);
+      color: var(--text);
     }
 
     a { color: var(--ink); text-decoration: none; transition: color var(--transition); }
@@ -84,7 +84,7 @@
       z-index: 100;
       overflow-y: auto;
       scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
+      scrollbar-color: rgba(139, 58, 42, 0.2) transparent;
     }
 
     .sidebar-header {
@@ -98,13 +98,14 @@
       align-items: center;
       gap: 0.625rem;
       text-decoration: none;
-      color: var(--paper);
+      color: var(--text);
     }
 
-    .sidebar-logo svg {
-      width: 28px;
-      height: 28px;
+    .sidebar-logo img {
+      width: 32px;
+      height: 32px;
       flex-shrink: 0;
+      border-radius: 4px;
     }
 
     .sidebar-logo-text {
@@ -112,12 +113,13 @@
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
+      color: var(--ink);
     }
 
     .sidebar-label {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-top: 0.25rem;
@@ -134,7 +136,7 @@
       gap: 0.5rem;
       padding: 0.5rem 1.5rem;
       font-size: var(--text-sm);
-      color: var(--paper-muted);
+      color: var(--text-faint);
       text-decoration: none;
       transition: all var(--transition);
       border-left: 2px solid transparent;
@@ -142,20 +144,21 @@
     }
 
     .sidebar-nav a:hover {
-      color: var(--paper);
-      background: rgba(200, 196, 188, 0.04);
+      color: var(--text);
+      background: rgba(139, 58, 42, 0.06);
     }
 
     .sidebar-nav a.active {
-      color: var(--paper);
+      color: var(--ink);
       border-left-color: var(--ink);
       background: rgba(139, 58, 42, 0.08);
+      font-weight: 500;
     }
 
     .sidebar-nav a .nav-marker {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       width: 1.5rem;
       flex-shrink: 0;
     }
@@ -174,7 +177,7 @@
       display: block;
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       letter-spacing: 0.04em;
       text-decoration: none;
       padding: 0.25rem 0;
@@ -210,7 +213,7 @@
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      color: var(--paper);
+      color: var(--text);
     }
 
     .hamburger svg { width: 20px; height: 20px; }
@@ -219,8 +222,9 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(26, 26, 26, 0.3);
       z-index: 90;
+      backdrop-filter: blur(2px);
     }
 
     /* ── Sections ── */
@@ -234,7 +238,7 @@
     .reg-mark {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       letter-spacing: 0.06em;
       text-transform: uppercase;
       display: flex;
@@ -244,9 +248,9 @@
     }
 
     .reg-mark::before {
-      content: '⊕';
-      font-size: 0.65rem;
-      opacity: 0.5;
+      content: '◎';
+      font-size: 0.7rem;
+      opacity: 0.6;
     }
 
     /* ── Typography ── */
@@ -256,6 +260,7 @@
       line-height: 1.15;
       letter-spacing: -0.02em;
       margin-bottom: 0.75rem;
+      color: var(--ink);
     }
 
     h2 {
@@ -265,6 +270,7 @@
       letter-spacing: -0.015em;
       margin-bottom: 1rem;
       padding-top: 0.5rem;
+      color: var(--ink);
     }
 
     h3 {
@@ -272,18 +278,20 @@
       font-weight: 600;
       line-height: 1.3;
       margin-bottom: 0.75rem;
+      color: var(--ink);
     }
 
     p {
       margin-bottom: 1rem;
       max-width: 68ch;
+      color: var(--text-muted);
     }
 
     p:last-child { margin-bottom: 0; }
 
     .subtitle {
       font-size: var(--text-lg);
-      color: var(--paper-muted);
+      color: var(--text-muted);
       font-weight: 400;
       max-width: 52ch;
       line-height: 1.6;
@@ -308,14 +316,14 @@
     code {
       font-family: var(--font-mono);
       font-size: 0.88em;
-      background: rgba(200, 196, 188, 0.08);
+      background: rgba(139, 58, 42, 0.08);
       padding: 0.15em 0.4em;
       border-radius: 3px;
-      color: var(--paper);
+      color: var(--ink);
     }
 
     pre {
-      background: #141414;
+      background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.25rem 1.5rem;
@@ -328,7 +336,7 @@
       background: none;
       padding: 0;
       font-size: var(--text-sm);
-      color: var(--paper-muted);
+      color: var(--text-muted);
     }
 
     /* ── Button / Link ── */
@@ -338,7 +346,7 @@
       gap: 0.5rem;
       font-family: var(--font-mono);
       font-size: var(--text-sm);
-      color: var(--paper);
+      color: #c8c4bc;
       background: var(--ink);
       padding: 0.6rem 1.25rem;
       border-radius: var(--radius);
@@ -349,7 +357,7 @@
 
     .btn:hover {
       background: var(--ink-hover);
-      color: #fff;
+      color: #f0ece4;
     }
 
     .btn svg { width: 14px; height: 14px; }
@@ -359,6 +367,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       margin-bottom: 1.5rem;
+      background: var(--bg-elevated);
     }
 
     summary {
@@ -366,7 +375,7 @@
       cursor: pointer;
       font-weight: 500;
       font-size: var(--text-sm);
-      color: var(--paper);
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 0.625rem;
@@ -375,14 +384,14 @@
     }
 
     summary:hover {
-      background: rgba(200, 196, 188, 0.04);
+      background: rgba(139, 58, 42, 0.06);
     }
 
     summary::before {
       content: '▸';
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      color: var(--paper-faint);
+      color: var(--text-faint);
       transition: transform var(--transition);
       display: inline-block;
     }
@@ -412,7 +421,7 @@
       align-items: flex-start;
       gap: 0.75rem;
       padding: 0.75rem 1rem;
-      background: rgba(200, 196, 188, 0.03);
+      background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
     }
@@ -433,11 +442,12 @@
     .feature-text {
       font-size: var(--text-sm);
       line-height: 1.55;
+      color: var(--text-muted);
     }
 
     .feature-text strong {
       font-weight: 600;
-      color: var(--paper);
+      color: var(--text);
     }
 
     /* ── Security table ── */
@@ -458,7 +468,7 @@
     .security-table th {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       text-transform: uppercase;
       letter-spacing: 0.06em;
       font-weight: 500;
@@ -466,11 +476,11 @@
 
     .security-table td:first-child {
       font-weight: 500;
-      color: var(--paper);
+      color: var(--text);
     }
 
     .security-table td:last-child {
-      color: var(--paper-muted);
+      color: var(--text-muted);
     }
 
     .check-mark {
@@ -502,7 +512,7 @@
     .version-date {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       margin-bottom: 1rem;
     }
 
@@ -513,7 +523,7 @@
     .changelog-category h4 {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       text-transform: uppercase;
       letter-spacing: 0.08em;
       margin-bottom: 0.5rem;
@@ -526,7 +536,7 @@
 
     .changelog-category li {
       font-size: var(--text-sm);
-      color: var(--paper-muted);
+      color: var(--text-muted);
       padding: 0.25rem 0;
       padding-left: 1rem;
       position: relative;
@@ -536,7 +546,7 @@
       content: '·';
       position: absolute;
       left: 0;
-      color: var(--paper-faint);
+      color: var(--text-faint);
       font-weight: bold;
     }
 
@@ -565,7 +575,39 @@
     .swatch-label {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
+    }
+
+    /* ── Logo display (brand section) ── */
+    .logo-display {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-display img {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .logo-display-info {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .logo-display-info strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: var(--text-base);
     }
 
     /* ── FAQ ── */
@@ -573,17 +615,18 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
       margin-bottom: 0.5rem;
+      background: var(--bg-elevated);
     }
 
     .faq-item summary {
       padding: 0.875rem 1.25rem;
       font-weight: 500;
       font-size: var(--text-base);
-      color: var(--paper);
+      color: var(--text);
     }
 
     .faq-item .details-body {
-      color: var(--paper-muted);
+      color: var(--text-muted);
       font-size: var(--text-sm);
       line-height: 1.7;
     }
@@ -604,7 +647,7 @@
       align-items: center;
       gap: 0.75rem;
       padding: 1rem 1.25rem;
-      background: rgba(200, 196, 188, 0.03);
+      background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
       text-decoration: none;
@@ -618,20 +661,20 @@
 
     .link-card-icon {
       font-size: 1.2rem;
-      color: var(--paper-faint);
+      color: var(--text-faint);
       flex-shrink: 0;
     }
 
     .link-card-text {
       font-size: var(--text-sm);
       font-weight: 500;
-      color: var(--paper);
+      color: var(--text);
     }
 
     .link-card-url {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       display: block;
     }
 
@@ -646,12 +689,12 @@
     .forbidden-word {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: #a04040;
-      background: rgba(160, 64, 64, 0.1);
+      color: #8b3a2a;
+      background: rgba(139, 58, 42, 0.1);
       padding: 0.2rem 0.6rem;
       border-radius: var(--radius);
       text-decoration: line-through;
-      text-decoration-color: rgba(160, 64, 64, 0.5);
+      text-decoration-color: rgba(139, 58, 42, 0.5);
     }
 
     /* ── Ordered list (how-it-works) ── */
@@ -669,7 +712,7 @@
       padding: 0.625rem 0;
       align-items: flex-start;
       font-size: var(--text-sm);
-      color: var(--paper-muted);
+      color: var(--text-muted);
       line-height: 1.6;
     }
 
@@ -692,7 +735,7 @@
 
     /* ── ASCII diagram ── */
     .ascii-diagram {
-      background: #141414;
+      background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.25rem 1.5rem;
@@ -701,7 +744,7 @@
       font-family: var(--font-mono);
       font-size: clamp(0.6rem, 0.5rem + 0.4vw, 0.78rem);
       line-height: 1.45;
-      color: var(--paper-muted);
+      color: var(--text-muted);
       white-space: pre;
     }
 
@@ -739,6 +782,11 @@
       .ascii-diagram {
         font-size: 0.55rem;
       }
+
+      .logo-display {
+        flex-direction: column;
+        text-align: center;
+      }
     }
 
     @media (max-width: 480px) {
@@ -755,8 +803,8 @@
     /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--paper-faint); }
+    ::-webkit-scrollbar-thumb { background: rgba(139, 58, 42, 0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(139, 58, 42, 0.35); }
 
     /* ── Focus ── */
     :focus-visible {
@@ -779,7 +827,7 @@
     }
 
     .hero-intro p {
-      color: var(--paper-muted);
+      color: var(--text-muted);
       font-size: var(--text-base);
       line-height: 1.75;
     }
@@ -800,7 +848,7 @@
     .font-preview-label {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
-      color: var(--paper-faint);
+      color: var(--text-faint);
       text-transform: uppercase;
       letter-spacing: 0.06em;
       margin-bottom: 0.375rem;
@@ -809,7 +857,7 @@
     .font-preview-sample {
       font-size: var(--text-xl);
       font-weight: 500;
-      color: var(--paper);
+      color: var(--text);
     }
 
     .font-preview-sample.mono {
@@ -825,11 +873,11 @@
     .brand-list li {
       padding: 0.375rem 0;
       font-size: var(--text-sm);
-      color: var(--paper-muted);
+      color: var(--text-muted);
     }
 
     .brand-list li strong {
-      color: var(--paper);
+      color: var(--text);
     }
   </style>
 </head>
@@ -853,17 +901,12 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <a href="#introduction" class="sidebar-logo">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="6" y="14" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M11 14V10C11 7.23858 13.2386 5 16 5C18.7614 5 21 7.23858 21 10V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="16" cy="21" r="2" fill="currentColor"/>
-          <path d="M16 23V25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Hood -->
-          <path d="M10 14C10 14 12 4 16 2C20 4 22 14 22 14" stroke="currentColor" stroke-width="1" opacity="0.4"/>
-        </svg>
-        <span class="sidebar-logo-text">Cloak</span>
+        <img src="logo-192.png" alt="Cloak logo" width="32" height="32">
+        <div>
+          <span class="sidebar-logo-text">Cloak</span>
+          <div class="sidebar-label">Documentation</div>
+        </div>
       </a>
-      <div class="sidebar-label">Documentation</div>
     </div>
 
     <nav class="sidebar-nav" id="nav">
@@ -886,7 +929,7 @@
   <main class="main">
     <div class="content">
 
-      <!-- ═══ 01 Introduction ═══ -->
+      <!-- 01 Introduction -->
       <section id="introduction">
         <div class="reg-mark">01 — Introduction</div>
         <h1>Cloak Documentation</h1>
@@ -906,7 +949,7 @@
         </a>
       </section>
 
-      <!-- ═══ 02 How It Works ═══ -->
+      <!-- 02 How It Works -->
       <section id="how-it-works">
         <div class="reg-mark">02 — How It Works</div>
         <h2>How It Works</h2>
@@ -989,7 +1032,7 @@
         </details>
       </section>
 
-      <!-- ═══ 03 Features ═══ -->
+      <!-- 03 Features -->
       <section id="features">
         <div class="reg-mark">03 — Features</div>
         <h2>Features</h2>
@@ -1038,7 +1081,7 @@
         </div>
       </section>
 
-      <!-- ═══ 04 Security ═══ -->
+      <!-- 04 Security -->
       <section id="security">
         <div class="reg-mark">04 — Security</div>
         <h2>Security</h2>
@@ -1101,7 +1144,7 @@
         </table>
       </section>
 
-      <!-- ═══ 05 Changelog ═══ -->
+      <!-- 05 Changelog -->
       <section id="changelog">
         <div class="reg-mark">05 — Changelog</div>
         <h2>Changelog</h2>
@@ -1194,18 +1237,22 @@
         </div>
       </section>
 
-      <!-- ═══ 06 Brand Guidelines ═══ -->
+      <!-- 06 Brand Guidelines -->
       <section id="brand">
         <div class="reg-mark">06 — Brand Guidelines</div>
         <h2>Brand Guidelines</h2>
 
+        <h3>Mark</h3>
+        <div class="logo-display">
+          <img src="logo-192.png" alt="Cloak hooded lock logo" width="120" height="120">
+          <div class="logo-display-info">
+            <strong>Hooded Lock Mark</strong>
+            The Cloak logo depicts a padlock beneath a hood — representing hidden encryption. Use at minimum 32px for digital applications. The mark works on both light and dark backgrounds.
+          </div>
+        </div>
+
         <h3>Colors</h3>
         <div class="color-swatches">
-          <div class="swatch">
-            <div class="swatch-color" style="background: #1a1a1a;"></div>
-            <span class="swatch-label">#1a1a1a</span>
-            <span class="swatch-label">Background</span>
-          </div>
           <div class="swatch">
             <div class="swatch-color" style="background: #c8c4bc;"></div>
             <span class="swatch-label">#c8c4bc</span>
@@ -1215,6 +1262,11 @@
             <div class="swatch-color" style="background: #8b3a2a;"></div>
             <span class="swatch-label">#8b3a2a</span>
             <span class="swatch-label">Ink / Terracotta</span>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #1a1a1a;"></div>
+            <span class="swatch-label">#1a1a1a</span>
+            <span class="swatch-label">Dark Accent</span>
           </div>
         </div>
 
@@ -1253,7 +1305,7 @@
         </div>
       </section>
 
-      <!-- ═══ 07 Links ═══ -->
+      <!-- 07 Links -->
       <section id="links">
         <div class="reg-mark">07 — Links</div>
         <h2>Links</h2>
@@ -1290,7 +1342,7 @@
         </div>
       </section>
 
-      <!-- ═══ 08 FAQ ═══ -->
+      <!-- 08 FAQ -->
       <section id="faq">
         <div class="reg-mark">08 — FAQ</div>
         <h2>Frequently Asked Questions</h2>
