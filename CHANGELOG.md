@@ -2,6 +2,21 @@
 
 All notable changes to Cloak are documented here.
 
+## v0.14.0 (2026-04-13)
+
+### Added
+- Canister Health section in Settings: cycle balance, estimated runway, stored entries count, active shares count
+- Health progress bar with color coding (green, orange, red based on cycle balance)
+- Canister ID with link to IC Dashboard for transparency
+- Support Cloak: ICP donation address displayed with copy button
+- Compact cycle health indicator in the app footer
+
+### Changed
+- Replaced drop shadow borders with thin ink borders on all containers
+- Background color split: body #bfbbb3, app card #c8c4bc for better visual separation
+- Removed decorative corner registration marks
+- Removed Medium social link from footers
+
 ## v0.13.1 (2026-04-13)
 
 ### Added

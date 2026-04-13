@@ -305,9 +305,9 @@ fn inspect_message() {
     let method = ic_cdk::api::msg_method_name();
 
     match method.as_str() {
-        // whoami and get_share accept anonymous callers
+        // whoami, get_share, and get_canister_health accept anonymous callers
         // (share link IS the authentication for get_share)
-        "whoami" | "get_share" => ic_cdk::api::accept_message(),
+        "whoami" | "get_share" | "get_canister_health" => ic_cdk::api::accept_message(),
         // All other methods require authentication
         _ => {
             if caller != Principal::anonymous() {
@@ -881,6 +881,34 @@ fn get_limits() -> (u64, u64) {
     let caller = require_auth();
     let count = count_user_entries(&caller);
     (count, MAX_ENTRIES_PER_USER)
+}
+
+// ─── Canister Health ────────────────────────────────────────────────
+
+/// Public canister health data. Exposes cycle balance, memory usage,
+/// and storage stats so the frontend can display a health indicator
+/// and donation information. No authentication required.
+#[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+pub struct CanisterHealth {
+    pub cycles: candid::Nat,
+    pub total_entries: u64,
+    pub total_shares: u64,
+    pub canister_id: String,
+}
+
+/// Get canister health stats. Public query, no auth required.
+/// Cycle balance and entry/share counts for the health indicator.
+#[query]
+fn get_canister_health() -> CanisterHealth {
+    let total_entries = VAULT.with(|v| v.borrow().len());
+    let total_shares = SHARES.with(|s| s.borrow().len());
+
+    CanisterHealth {
+        cycles: candid::Nat::from(ic_cdk::api::canister_cycle_balance()),
+        total_entries,
+        total_shares,
+        canister_id: ic_cdk::api::canister_self().to_text(),
+    }
 }
 
 // ─── Admin: Maintenance Mode ────────────────────────────────────────
