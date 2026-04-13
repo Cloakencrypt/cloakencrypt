@@ -300,8 +300,6 @@ button { cursor: pointer; background: none; border: none; }
 
 .auth-btn:hover {
     background: #6b2a1e;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(139,58,42,0.3);
 }
 
 .auth-btn:active {
@@ -5273,6 +5271,43 @@ function initLoginScreen() {
         }
         bgEl.textContent = chars.join('');
     }, 80);
+
+    // Glitch text effect on auth button hover
+    (function initAuthBtnGlitch() {
+        const btn = document.getElementById('auth-btn');
+        if (!btn) return;
+        const glyphSet = '!@#$%^&*()_+{}|:<>?/\\=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        let originalText = '';
+        let glitchInterval = null;
+
+        btn.addEventListener('mouseenter', () => {
+            if (btn.disabled) return;
+            originalText = btn.textContent;
+            let iterations = 0;
+            const chars = originalText.split('');
+            glitchInterval = setInterval(() => {
+                btn.textContent = chars.map((ch, i) => {
+                    if (ch === ' ') return ' ';
+                    if (i < iterations) return originalText[i];
+                    return glyphSet[Math.floor(Math.random() * glyphSet.length)];
+                }).join('');
+                iterations += 1;
+                if (iterations > chars.length) {
+                    clearInterval(glitchInterval);
+                    glitchInterval = null;
+                    btn.textContent = originalText;
+                }
+            }, 40);
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            if (glitchInterval) {
+                clearInterval(glitchInterval);
+                glitchInterval = null;
+            }
+            if (originalText) btn.textContent = originalText;
+        });
+    })();
 
     document.getElementById('auth-btn').addEventListener('click', async () => {
         const authBtn = document.getElementById('auth-btn');
