@@ -2,6 +2,20 @@
 
 All notable changes to Cloak are documented here.
 
+## v0.14.1 (2026-04-13)
+
+### Security
+- Replaced predictable share ID generation (simple_hash) with cryptographic randomness (raw_rand from subnet RNG)
+- Normalized all get_share error messages to prevent share enumeration via error differentiation
+- Added global rate limiter on get_share (30 lookups/minute) to prevent brute-force attempts
+- Password generator now uses crypto.getRandomValues with rejection sampling instead of Math.random
+- Removed inline onclick handlers with sensitive data from share view; copy buttons now use closure-based event listeners
+- Added dedup_key length validation (max 64 bytes) to prevent heap memory abuse
+
+### Removed
+- Canister Health section from Settings (internal data, confusing for end users)
+- Footer cycle indicator
+
 ## v0.14.0 (2026-04-13)
 
 ### Added

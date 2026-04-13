@@ -510,6 +510,9 @@ fn add_entry(encrypted_data: ByteBuf, iv: ByteBuf, dedup_key: Option<String>) ->
 
     // ── Idempotency check ───────────────────────────────────────
     if let Some(ref dk) = dedup_key {
+        if dk.len() > 64 {
+            ic_cdk::trap("Dedup key too long (max 64 bytes)");
+        }
         if let Some(existing_id) = check_dedup(&caller, dk) {
             return existing_id;
         }
@@ -627,33 +630,20 @@ fn get_entry_count() -> u64 {
 
 // ─── Share ID Helpers ───────────────────────────────────────────────
 
-fn generate_share_id(caller: &Principal) -> String {
-    let counter = SHARE_COUNTER.with(|c| {
+/// Generate a cryptographically random share ID using the subnet's RNG.
+/// Uses raw_rand() from the management canister for unpredictable 128-bit IDs.
+/// This replaced a weak simple_hash function that was predictable.
+async fn generate_share_id() -> String {
+    // Still increment counter for bookkeeping
+    SHARE_COUNTER.with(|c| {
         let mut cell = c.borrow_mut();
         let current = *cell.get();
-        // StableCell::set() returns the previous value (not Result).
-        // Internally it calls .expect() on the memory write, so a
-        // stable memory failure will trap the canister.
         let _ = cell.set(current + 1);
-        current
     });
-    let time = ic_cdk::api::time();
-    let mut bytes = Vec::new();
-    bytes.extend_from_slice(caller.as_slice());
-    bytes.extend_from_slice(&counter.to_be_bytes());
-    bytes.extend_from_slice(&time.to_be_bytes());
-    let hash = simple_hash(&bytes);
-    hex_encode(&hash[..16])
-}
-
-fn simple_hash(data: &[u8]) -> [u8; 32] {
-    let mut state = [0u8; 32];
-    for (i, &byte) in data.iter().enumerate() {
-        state[i % 32] ^= byte;
-        state[(i + 7) % 32] = state[(i + 7) % 32].wrapping_add(byte);
-        state[(i + 13) % 32] = state[(i + 13) % 32].wrapping_mul(byte.wrapping_add(1));
-    }
-    state
+    let random_bytes = ic_cdk::management_canister::raw_rand()
+        .await
+        .expect("Failed to get random bytes from subnet RNG");
+    hex_encode(&random_bytes[..16])
 }
 
 fn hex_encode(bytes: &[u8]) -> String {
@@ -691,7 +681,7 @@ fn hex_decode(hex: &str) -> Result<Vec<u8>, String> {
 /// one-time share key (AES-256-GCM) BEFORE calling this. The canister
 /// only stores ciphertext and never sees the share key.
 #[update]
-fn create_share(
+async fn create_share(
     encrypted_data: ByteBuf,
     iv: ByteBuf,
     expires_in_ns: u64,
@@ -723,7 +713,7 @@ fn create_share(
         ));
     }
 
-    let id = generate_share_id(&caller);
+    let id = generate_share_id().await;
     let now = ic_cdk::api::time();
 
     let entry = SharedEntry {
@@ -754,13 +744,51 @@ fn create_share(
     id
 }
 
+// Global rate limiter for unauthenticated get_share endpoint.
+// Prevents brute-force enumeration of share IDs.
+thread_local! {
+    static SHARE_LOOKUP_COUNTER: Cell<u64> = Cell::new(0);
+    static SHARE_LOOKUP_WINDOW_START: Cell<u64> = Cell::new(0);
+}
+const MAX_SHARE_LOOKUPS_PER_MINUTE: u64 = 30;
+
+fn enforce_share_rate_limit() {
+    let now = ic_cdk::api::time();
+    let window_ns = 60_000_000_000u64; // 1 minute in nanoseconds
+    let window_start = SHARE_LOOKUP_WINDOW_START.with(|w| w.get());
+
+    if now - window_start > window_ns {
+        // Reset window
+        SHARE_LOOKUP_WINDOW_START.with(|w| w.set(now));
+        SHARE_LOOKUP_COUNTER.with(|c| c.set(1));
+    } else {
+        let count = SHARE_LOOKUP_COUNTER.with(|c| {
+            let val = c.get() + 1;
+            c.set(val);
+            val
+        });
+        if count > MAX_SHARE_LOOKUPS_PER_MINUTE {
+            ic_cdk::trap("Rate limit exceeded. Try again later.");
+        }
+    }
+}
+
+/// Generic error message for all share lookup failures.
+/// Using a single message prevents enumeration via error differentiation.
+const SHARE_NOT_FOUND_MSG: &str = "Shared credential not found. It may have expired or been destroyed.";
+
 /// Get a shared credential. No authentication required.
-/// Returns the encrypted data, or error if expired/not found.
+/// Returns the encrypted data, or a generic error.
 /// If self_destruct is true, deletes the share after returning it.
 /// Must be an update call (not query) because self_destruct mutates state.
 #[update]
 fn get_share(id: String) -> Result<SharedEntry, String> {
-    let key = share_key_from_id(&id)?;
+    enforce_share_rate_limit();
+
+    let key = match share_key_from_id(&id) {
+        Ok(k) => k,
+        Err(_) => return Err(SHARE_NOT_FOUND_MSG.to_string()),
+    };
     let now = ic_cdk::api::time();
 
     SHARES.with(|s| {
@@ -771,32 +799,28 @@ fn get_share(id: String) -> Result<SharedEntry, String> {
             if now > entry.expires_at {
                 let creator = entry.creator;
                 shares.remove(&key);
-                // Decrement per-user share counter
                 USER_SHARE_COUNTS.with(|c| {
                     let mut counts = c.borrow_mut();
                     if let Some(count) = counts.get_mut(&creator) {
                         *count = count.saturating_sub(1);
                     }
                 });
-                return Err("This shared credential has expired.".to_string());
+                // Return generic error (no "expired" distinction)
+                return Err(SHARE_NOT_FOUND_MSG.to_string());
             }
 
             // Check if already viewed and destroyed
             if entry.self_destruct && entry.viewed {
                 shares.remove(&key);
-                return Err(
-                    "This shared credential has already been viewed and was destroyed."
-                        .to_string(),
-                );
+                // Return generic error (no "already viewed" distinction)
+                return Err(SHARE_NOT_FOUND_MSG.to_string());
             }
 
             let result = entry.clone();
 
             if entry.self_destruct {
-                // Delete immediately for self-destruct
                 let creator = entry.creator;
                 shares.remove(&key);
-                // Decrement per-user share counter
                 USER_SHARE_COUNTS.with(|c| {
                     let mut counts = c.borrow_mut();
                     if let Some(count) = counts.get_mut(&creator) {
@@ -804,7 +828,6 @@ fn get_share(id: String) -> Result<SharedEntry, String> {
                     }
                 });
             } else {
-                // Mark as viewed (for tracking)
                 let mut updated = entry.clone();
                 updated.viewed = true;
                 shares.insert(key, updated);
@@ -812,7 +835,7 @@ fn get_share(id: String) -> Result<SharedEntry, String> {
 
             Ok(result)
         } else {
-            Err("Shared credential not found. It may have expired or been destroyed.".to_string())
+            Err(SHARE_NOT_FOUND_MSG.to_string())
         }
     })
 }
